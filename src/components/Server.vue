@@ -38,6 +38,7 @@ export default {
       timer: null,
       logs: [],
       audio: null,
+      timeDiff: 19800000,
     };
   },
   mounted() {
@@ -47,13 +48,14 @@ export default {
     async initalize() {
       this.timer = setInterval(async () => {
         const now = new Date();
+        const temp = new Date(now.getTime() + this.timeDiff);
         const res = await axios.get(
-          `${this.api}${now.getDate()}-${now.getMonth() +
-            1}-${now.getFullYear()}`
+          `${this.api}${temp.getDate()}-${temp.getMonth() +
+            1}-${temp.getFullYear()}`
         );
 
         const result = await this.processData(res.data);
-        this.logs.push([result, now]);
+        this.logs.push([result, temp]);
       }, 10000);
     },
     stopServer() {
