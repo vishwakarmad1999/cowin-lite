@@ -16,6 +16,12 @@
         Stop Server
       </button>
     </div>
+
+    <audio
+      src="https://dl.prokerala.com/downloads/ringtones/files/mp3/kirby-super-star-ost-kirby-super-star-3434.mp3"
+      id="audio"
+      loop
+    ></audio>
   </div>
 </template>
 
@@ -31,7 +37,11 @@ export default {
         "https://cdn-api.co-vin.in/api/v2/appointment/sessions/public/calendarByPin?pincode=480661&date=",
       timer: null,
       logs: [],
+      audio: null,
     };
+  },
+  mounted() {
+    this.audio = document.getElementById("audio");
   },
   methods: {
     async initalize() {
@@ -42,13 +52,16 @@ export default {
             1}-${now.getFullYear()}`
         );
 
-        this.logs.push([await this.processData(res.data), now]);
+        const result = await this.processData(res.data);
+        this.logs.push([result, now]);
       }, 10000);
     },
     stopServer() {
       clearInterval(this.timer);
       this.timer = null;
       this.logs = [];
+      this.audio.pause();
+      this.currentTime = 0;
     },
     async processData(res) {
       let message = "";
@@ -82,6 +95,8 @@ export default {
       }
 
       if (message) {
+        this.audio.play();
+
         const users = await getUsers();
 
         users.forEach(async (user) => {
