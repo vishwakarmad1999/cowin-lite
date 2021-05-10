@@ -160,16 +160,16 @@ export default {
                   sessions[k].available_capacity > 0
                 ) {
                   message +=
-                    "Center: " +
-                    centers[j].name +
-                    "<br/>" +
-                    "Date: " +
+                    "<strong>Date:</strong> " +
                     sessions[k].date +
                     "<br/>" +
-                    "Capacity: " +
+                    "<strong>Center:</strong> " +
+                    centers[j].name +
+                    "<br/>" +
+                    "<strong>Capacity:</strong> " +
                     sessions[k].available_capacity +
                     "<br/>" +
-                    "Minimum Age: " +
+                    "<strong>Minimum Age:</strong> " +
                     sessions[k].min_age_limit +
                     "<br/><br/>";
                 }
