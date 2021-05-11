@@ -1,14 +1,19 @@
 <template>
   <div class="container">
-    <div class="logs">
-      <h4 v-for="([flag, now], index) of logs" class="lead" :key="now">
-        <span :class="[flag ? 'bg-success text-light' : 'text-danger']"
-          >{{ index + 1 }}. {{ now }}</span
-        >
+    <div class="logs mt-5">
+      <h4
+        v-for="[flag, now] of logs"
+        :class="[
+          flag ? 'bg-success display-4' : 'bg-secondary',
+          'text-light lead',
+        ]"
+        :key="now"
+      >
+        <span>{{ now }}</span>
       </h4>
     </div>
 
-    <div class="d-grid btn-container">
+    <div class="d-grid mt-5">
       <button class="btn btn-success" v-if="!timer" @click="initalize">
         Start Server
       </button>
@@ -41,8 +46,23 @@ export default {
       timeDiff: 19800000,
     };
   },
+  created() {
+    window.addEventListener("beforeunload", function(e) {
+      e.preventDefault();
+      e.returnValue = "";
+    });
+  },
+  beforeMount() {
+    const password = prompt("Enter password");
+    if (password !== "master_admin24jan99") {
+      this.$router.push("/");
+    }
+  },
   mounted() {
     this.audio = document.getElementById("audio");
+  },
+  beforeUnmount() {
+    this.timer = null;
   },
   methods: {
     async initalize() {
@@ -55,8 +75,8 @@ export default {
         );
 
         const result = await this.processData(res.data);
-        this.logs.push([result, temp]);
-      }, 10000);
+        this.logs.push([result, temp.toLocaleTimeString()]);
+      }, 5000);
     },
     stopServer() {
       clearInterval(this.timer);
@@ -118,15 +138,8 @@ export default {
 </script>
 
 <style scoped>
-.btn-container {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-}
-
 .logs {
-  height: 90vh;
+  height: 80vh;
   overflow-y: scroll;
   border: 1px solid black;
   text-align: center;
