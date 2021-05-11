@@ -43,7 +43,6 @@ export default {
       timer: null,
       logs: [],
       audio: null,
-      timeDiff: 19800000,
     };
   },
   created() {
@@ -68,14 +67,17 @@ export default {
     async initalize() {
       this.timer = setInterval(async () => {
         const now = new Date();
-        const temp = new Date(now.getTime() + this.timeDiff);
+        let strTime = now.toLocaleString("en-US", {
+          timeZone: "Asia/Kolkata",
+        });
+        const temp = new Date(strTime);
         const res = await axios.get(
           `${this.api}${temp.getDate()}-${temp.getMonth() +
             1}-${temp.getFullYear()}`
         );
 
         const result = await this.processData(res.data);
-        this.logs.push([result, temp.toLocaleTimeString()]);
+        this.logs.push([result, temp.toLocaleString()]);
       }, 5000);
     },
     stopServer() {
