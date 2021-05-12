@@ -1,16 +1,35 @@
 <template>
   <div class="container">
     <div class="logs mt-5">
-      <h4
-        v-for="[flag, now] of logs"
-        :class="[
-          flag ? 'bg-success display-4' : 'bg-secondary',
-          'text-light lead',
-        ]"
+      <div
+        v-for="([flag, now, status, data], index) of logs"
+        :class="[flag ? 'bg-success display-4' : 'bg-light', 'text-light lead mb-4 d-grid']"
         :key="now"
       >
-        <span>{{ now }}</span>
-      </h4>
+        <button
+          class="btn btn-secondary"
+          data-bs-toggle="collapse"
+          :data-bs-target="'#a' + index"
+          aria-expanded="false"
+          :aria-controls="'a' + index"
+        >
+          {{ now }} - <strong>{{ status }}</strong>
+        </button>
+        <div class="collapse" :id="'a' + index">
+          <p class="card card-body text-secondary">
+            <pre
+              style="font-size: 10px"
+              v-html="JSON.stringify(data, null, 2)"
+            ></pre>
+          </p>
+        </div>
+      </div>
+      <div
+        v-if="error"
+        class="bg-danger text-light h-100 d-flex justify-content-center align-items-center display-4"
+      >
+        {{ error }}
+      </div>
     </div>
 
     <div class="d-grid mt-5">
@@ -43,6 +62,7 @@ export default {
       timer: null,
       logs: [],
       audio: null,
+      error: null,
     };
   },
   created() {
@@ -65,19 +85,24 @@ export default {
   },
   methods: {
     async initalize() {
+      this.error = null;
       this.timer = setInterval(async () => {
         const now = new Date();
         let strTime = now.toLocaleString("en-US", {
           timeZone: "Asia/Kolkata",
         });
         const temp = new Date(strTime);
-        const res = await axios.get(
-          `${this.api}${temp.getDate()}-${temp.getMonth() +
-            1}-${temp.getFullYear()}`
-        );
-
-        const result = await this.processData(res.data);
-        this.logs.push([result, temp.toLocaleString()]);
+        try {
+          const res = await axios.get(
+            `${this.api}${temp.getDate()}-${temp.getMonth() +
+              1}-${temp.getFullYear()}`
+          );
+          const result = await this.processData(res.data);
+          this.logs.push([result, temp.toLocaleString(), res.status, res.data]);
+        } catch (err) {
+          this.error = "Not able to make requests ";
+          this.stopServer();
+        }
       }, 5000);
     },
     stopServer() {
@@ -144,6 +169,5 @@ export default {
   height: 80vh;
   overflow-y: scroll;
   border: 1px solid black;
-  text-align: center;
 }
 </style>
