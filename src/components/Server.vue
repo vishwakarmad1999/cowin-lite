@@ -152,9 +152,7 @@ export default {
         const users = await getUsers();
 
         users.forEach(async (user) => {
-          if (user.current != message) {
-            await sendMail(user.email, message);
-          }
+          await sendMail(user.email, message);
         });
 
         await updateCurrent(message);
