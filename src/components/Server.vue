@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <div class="logs mt-5">
+    <div class="logs">
       <div
         v-for="[flag, now, status] of logs"
         class="text-light lead mb-4 d-grid"
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import { getUsers, sendMail, updateCurrent } from "../service";
+import { getUsers, sendMail } from "../service";
 import axios from "axios";
 
 export default {
@@ -106,7 +106,7 @@ export default {
           this.error = "Not able to make requests ";
           this.stopServer();
         }
-      }, 5000);
+      }, 4000);
     },
     stopServer() {
       clearInterval(this.timer);
@@ -155,7 +155,6 @@ export default {
           await sendMail(user.email, message);
         });
 
-        await updateCurrent(message);
         return true;
       } else {
         return false;
