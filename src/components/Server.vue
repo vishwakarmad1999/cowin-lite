@@ -2,26 +2,26 @@
   <div class="container">
     <div class="logs mt-5">
       <div
-        v-for="([flag, now, status, data], index) of logs"
-        :class="[flag ? 'bg-success display-4' : 'bg-light', 'text-light lead mb-4 d-grid']"
+        v-for="[flag, now, status] of logs"
+        class="text-light lead mb-4 d-grid"
         :key="now"
       >
         <button
-          class="btn btn-secondary"
+          :class="['btn', flag ? 'btn-success' : 'btn-secondary']"
           data-bs-toggle="collapse"
-          :data-bs-target="'#a' + index"
+          data-bs-target="#json"
           aria-expanded="false"
-          :aria-controls="'a' + index"
+          aria-controls="json"
         >
           {{ now }} - <strong>{{ status }}</strong>
         </button>
-        <div class="collapse" :id="'a' + index">
-          <p class="card card-body text-secondary">
-            <pre
-              style="font-size: 10px"
-              v-html="JSON.stringify(data, null, 2)"
-            ></pre>
-          </p>
+      </div>
+      <div class="collapse" id="json">
+        <div class="card card-body text-secondary">
+          <pre
+            style="font-size: 10px"
+            v-html="JSON.stringify(data, null, 2)"
+          ></pre>
         </div>
       </div>
       <div
@@ -63,6 +63,7 @@ export default {
       logs: [],
       audio: null,
       error: null,
+      data: null,
     };
   },
   created() {
@@ -97,8 +98,10 @@ export default {
             `${this.api}${temp.getDate()}-${temp.getMonth() +
               1}-${temp.getFullYear()}`
           );
+          this.data = res.data;
+
           const result = await this.processData(res.data);
-          this.logs.push([result, temp.toLocaleString(), res.status, res.data]);
+          this.logs.push([result, temp.toLocaleString(), res.status]);
         } catch (err) {
           this.error = "Not able to make requests ";
           this.stopServer();
