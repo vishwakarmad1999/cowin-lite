@@ -115,7 +115,15 @@ export default {
         this.error = false;
         const result = await createUser(this.userEmail);
         if (result === 201) {
-          await sendMail(this.userEmail, "Registration successfull!!!");
+          const message =
+            "Hey Pal<br/>" +
+            "You will soon be receiving emails as soon as the slots are available in <strong>Seoni</strong>" +
+            "Just do me a favour by turning on sync of your email application like Gmail, Outlook, etc. By doing so you will start receiving notifications if you haven't been receiving them.";
+          await sendMail(
+            this.userEmail,
+            message,
+            "Cowin-Lite Registration Confiramtion"
+          );
           this.userEmail = "";
           this.message = true;
         } else {

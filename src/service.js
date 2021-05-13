@@ -41,11 +41,12 @@ export async function updateCurrent(message) {
     });
 }
 
-export async function sendMail(email, message) {
+export async function sendMail(email, message, subject) {
   return axios
-    .post(`${url}sendMail`, {
+    .post(`${url}send`, {
       email,
       message,
+      subject,
     })
     .then((res) => {
       return res.status;
