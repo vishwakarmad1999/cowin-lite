@@ -20,10 +20,10 @@
     </div>
 
     <div class="d-grid mt-5">
-      <button class="btn btn-outline-success" v-if="!timer" @click="initialze">
+      <button class="btn btn-success" v-if="!timer" @click="initialze">
         Start Server
       </button>
-      <button class="btn btn-outline-danger" v-else @click="stopServer">
+      <button class="btn btn-danger" v-else @click="stopServer">
         Stop Server
       </button>
     </div>
@@ -93,7 +93,7 @@ export default {
           this.error = "Check your connection";
           this.stopServer();
         }
-      }, 3500);
+      }, 4000);
     },
     stopServer() {
       clearInterval(this.timer);
