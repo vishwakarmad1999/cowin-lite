@@ -30,6 +30,7 @@
       <a
         href="https://milaap.org/fundraisers/support-covid-patients-49?utm_source=whatsapp&utm_medium=fundraisers-title"
         class="btn btn-primary"
+        target="_blank"
         >Fund Raise</a
       >
     </div>
@@ -51,6 +52,6 @@ p {
 }
 
 img {
-  margin-bottom: 5rem;
+  margin-bottom: 2rem;
 }
 </style>

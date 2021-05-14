@@ -5,6 +5,7 @@
         <div :class="[log[0] ? 'bg-success' : 'bg-chill ', 'log display-4']">
           <div class="col-12">{{ log[1] }}</div>
           <div class="col-12">{{ log[2] }}</div>
+          <div v-if="log[0]" class="col-12">{{ success }}</div>
         </div>
         <div class="card card-body text-secondary">
           <pre
@@ -33,12 +34,15 @@
       id="audio"
       loop
     ></audio>
+
+    <audio id="erroraudio" loop></audio>
   </div>
 </template>
 
 <script>
-import { getUsers, sendMail } from "../service";
+import { getUsers, sendMail, updateCurrent } from "../service";
 import axios from "axios";
+import errorAudio from "../assets/error.mp3";
 
 export default {
   name: "Server",
@@ -51,6 +55,8 @@ export default {
       audio: null,
       error: null,
       data: null,
+      success: null,
+      errorSound: null,
     };
   },
   created() {
@@ -67,6 +73,8 @@ export default {
   },
   mounted() {
     this.audio = document.getElementById("audio");
+    this.errorSound = document.getElementById("erroraudio");
+    this.errorSound.src = errorAudio;
   },
   beforeUnmount() {
     this.timer = null;
@@ -74,6 +82,10 @@ export default {
   methods: {
     async initialze() {
       this.error = null;
+
+      this.errorSound.pause();
+      this.errorSound.currentTime = 0;
+
       this.timer = setInterval(async () => {
         const now = new Date();
         let strTime = now.toLocaleString("en-US", {
@@ -85,12 +97,18 @@ export default {
             `${this.api}${temp.getDate()}-${temp.getMonth() +
               1}-${temp.getFullYear()}`
           );
+          const result = await this.processData(res.data, temp);
 
-          const result = await this.processData(res.data);
+          if (!this.audio.paused && !result) {
+            this.audio.pause();
+            this.currentTime = 0;
+          }
+
           this.log = [result, temp.toDateString(), temp.toLocaleTimeString()];
           this.data = res.data;
         } catch (err) {
           this.error = "Check your connection";
+          this.errorSound.play();
           this.stopServer();
         }
       }, 4000);
@@ -102,8 +120,9 @@ export default {
       this.data = null;
       this.audio.pause();
       this.currentTime = 0;
+      this.success = null;
     },
-    async processData(res) {
+    async processData(res, now) {
       let message = "";
       const centers = res.centers;
       if (centers.length) {
@@ -140,13 +159,27 @@ export default {
 
         const users = await getUsers();
 
+        let flag = false;
         users.forEach(async (user) => {
-          await sendMail(
-            user.email,
-            message,
-            "Vaccination Slots Available - Seoni"
-          );
+          if (
+            user.current === null ||
+            (user.current &&
+              new Date(now).getTime() - new Date(user.current).getTime() >
+                120 * 1000)
+          ) {
+            await sendMail(
+              user.email,
+              message,
+              "Vaccination Slots Available - Seoni"
+            );
+            flag = true;
+          }
         });
+
+        if (flag) {
+          this.success = `Emails sent to ${users.length} users`;
+          await updateCurrent(now);
+        }
 
         return true;
       } else {

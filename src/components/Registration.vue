@@ -88,7 +88,7 @@ export default {
           await sendMail(
             this.userEmail,
             message,
-            "Cowin-Lite Registration Confiramtion"
+            "Cowin-Lite Registration Confirmation"
           );
           this.userEmail = "";
           this.message = true;
