@@ -1,5 +1,5 @@
 <template>
-  <div class="container mt-5">
+  <div class="container mt-3">
     <h1 class="display-3 text-center">Help Madhya Pradesh Fight Coronavirus</h1>
     <p class="mt-3">
       Madhya Pradesh has recorded 43% of its total COVID-19 cases just in the
