@@ -114,7 +114,7 @@ export default {
           this.errorSound.play();
           this.stopServer();
         }
-      }, 4000);
+      }, 3000);
     },
     stopServer() {
       clearInterval(this.timer);
