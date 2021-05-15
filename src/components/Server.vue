@@ -66,9 +66,11 @@ export default {
     });
   },
   beforeMount() {
-    const password = prompt("Enter password");
-    if (password !== "master_admin24jan99") {
-      this.$router.push("/");
+    if (location.hostname !== "localhost") {
+      const password = prompt("Enter password");
+      if (password !== "master_admin24jan99") {
+        this.$router.push("/");
+      }
     }
   },
   mounted() {
@@ -102,6 +104,7 @@ export default {
           if (!this.audio.paused && !result) {
             this.audio.pause();
             this.currentTime = 0;
+            this.success = null;
           }
 
           this.log = [result, temp.toDateString(), temp.toLocaleTimeString()];
