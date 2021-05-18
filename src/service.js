@@ -55,3 +55,17 @@ export async function sendMail(email, message, subject) {
       return err.message;
     });
 }
+
+export async function sendAll(message, subject) {
+  return axios
+    .post(`${url}broadcast`, {
+      message,
+      subject,
+    })
+    .then((res) => {
+      return res.status;
+    })
+    .catch((err) => {
+      return err.message;
+    });
+}

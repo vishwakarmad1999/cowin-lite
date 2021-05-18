@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { getUsers, sendMail, updateCurrent } from "../service";
+import { getUsers, sendAll, updateCurrent } from "../service";
 import axios from "axios";
 import errorAudio from "../assets/error.mp3";
 
@@ -161,23 +161,18 @@ export default {
         this.audio.play();
 
         const users = await getUsers();
+        const user = users[0];
 
         let flag = false;
-        users.forEach(async (user) => {
-          if (
-            user.current === null ||
-            (user.current &&
-              new Date(now).getTime() - new Date(user.current).getTime() >
-                120 * 1000)
-          ) {
-            await sendMail(
-              user.email,
-              message,
-              "Vaccination Slots Available - Seoni"
-            );
-            flag = true;
-          }
-        });
+        if (
+          user.current === null ||
+          (user.current &&
+            new Date(now).getTime() - new Date(user.current).getTime() >
+              120 * 1000)
+        ) {
+          await sendAll(message, "Vaccination Slots Available - Seoni");
+          flag = true;
+        }
 
         if (flag) {
           this.success = `Emails sent to ${users.length} users`;
