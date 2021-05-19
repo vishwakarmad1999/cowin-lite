@@ -168,7 +168,7 @@ export default {
           user.current === null ||
           (user.current &&
             new Date(now).getTime() - new Date(user.current).getTime() >
-              120 * 1000)
+              300 * 1000)
         ) {
           await sendAll(message, "Vaccination Slots Available - Seoni");
           flag = true;
