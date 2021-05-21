@@ -40,7 +40,7 @@
 </template>
 
 <script>
-import { getUsers, sendAll, updateCurrent } from "../service";
+import { getUsers, notifyBot, updateCurrent } from "../service";
 import axios from "axios";
 import errorAudio from "../assets/error.mp3";
 
@@ -138,18 +138,18 @@ export default {
                 sessions[k].available_capacity > 0
               ) {
                 message +=
-                  "<strong>Date:</strong> " +
+                  "Date: " +
                   sessions[k].date +
-                  "<br/>" +
-                  "<strong>Center:</strong> " +
+                  "\n" +
+                  "Center: " +
                   centers[j].name +
-                  "<br/>" +
-                  "<strong>Capacity:</strong> " +
+                  "\n" +
+                  "Capacity: " +
                   sessions[k].available_capacity +
-                  "<br/>" +
-                  "<strong>Minimum Age:</strong> " +
+                  "\n" +
+                  "Minimum Age: " +
                   sessions[k].min_age_limit +
-                  "<hr/>";
+                  "\n\n";
               }
             }
           }
@@ -157,7 +157,6 @@ export default {
       }
 
       if (message) {
-        message = "<hr/>" + message;
         this.audio.play();
 
         const users = await getUsers();
@@ -168,14 +167,14 @@ export default {
           user.current === null ||
           (user.current &&
             new Date(now).getTime() - new Date(user.current).getTime() >
-              300 * 1000)
+              120 * 1000)
         ) {
-          await sendAll(message, "Vaccination Slots Available - Seoni");
+          await notifyBot(encodeURI(message));
           flag = true;
         }
 
         if (flag) {
-          this.success = `Emails sent to ${users.length} users`;
+          this.success = "Message sent";
           await updateCurrent(now);
         }
 

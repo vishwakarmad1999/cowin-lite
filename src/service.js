@@ -1,6 +1,7 @@
 import axios from "axios";
 
 const url = "/api/";
+const BOT_TOKEN = "1753057580:AAGOXCKLoAlercB0i8r_xY8g_e8Gi040T7M";
 
 export async function getUsers() {
   const users = await axios.get(`${url}users`);
@@ -68,4 +69,13 @@ export async function sendAll(message, subject) {
     .catch((err) => {
       return err.message;
     });
+}
+
+export async function notifyBot(message) {
+  const bot_url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=-573056182&text=${message}`;
+
+  return axios
+    .post(bot_url)
+    .then((res) => res.status)
+    .catch((err) => err.message);
 }
