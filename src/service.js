@@ -8,60 +8,11 @@ export async function getUsers() {
   return users.data;
 }
 
-export async function createUser(email) {
-  const users = await getUsers();
-
-  for (let i = 0; i < users.length; i++) {
-    if (users[i].email.toLowerCase() == email.toLowerCase()) {
-      return 400;
-    }
-  }
-
-  return axios
-    .post(`${url}create-user`, {
-      email,
-    })
-    .then((res) => {
-      return res.status;
-    })
-    .catch((err) => {
-      return err.message;
-    });
-}
-
-export async function updateCurrent(message) {
+export async function updateCurrent(message, last) {
   return axios
     .put(`${url}update-current`, {
       message,
-    })
-    .then((res) => {
-      return res.status;
-    })
-    .catch((err) => {
-      return err.message;
-    });
-}
-
-export async function sendMail(email, message, subject) {
-  return axios
-    .post(`${url}send`, {
-      email,
-      message,
-      subject,
-    })
-    .then((res) => {
-      return res.status;
-    })
-    .catch((err) => {
-      return err.message;
-    });
-}
-
-export async function sendAll(message, subject) {
-  return axios
-    .post(`${url}broadcast`, {
-      message,
-      subject,
+      last,
     })
     .then((res) => {
       return res.status;

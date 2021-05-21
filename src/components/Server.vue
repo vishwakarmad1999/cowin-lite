@@ -167,7 +167,8 @@ export default {
           user.current === null ||
           (user.current &&
             new Date(now).getTime() - new Date(user.current).getTime() >
-              120 * 1000)
+              300 * 1000) ||
+          user.last !== message
         ) {
           await notifyBot(encodeURI(message));
           flag = true;
@@ -175,7 +176,7 @@ export default {
 
         if (flag) {
           this.success = "Message sent";
-          await updateCurrent(now);
+          await updateCurrent(now, message);
         }
 
         return true;
