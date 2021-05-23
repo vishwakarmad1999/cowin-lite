@@ -35,7 +35,7 @@
       loop
     ></audio>
 
-    <audio id="erroraudio" loop></audio>
+    <audio id="erroraudio"></audio>
   </div>
 </template>
 
@@ -57,6 +57,7 @@ export default {
       data: null,
       success: null,
       errorSound: null,
+      errorTimer: null,
     };
   },
   created() {
@@ -79,11 +80,13 @@ export default {
     this.errorSound.src = errorAudio;
   },
   beforeUnmount() {
-    this.timer = null;
+    clearInterval(this.timer);
+    clearTimeout(this.errorTimer);
   },
   methods: {
     async initialze() {
       this.error = null;
+      clearTimeout(this.errorTimer);
 
       this.errorSound.pause();
       this.errorSound.currentTime = 0;
@@ -110,9 +113,12 @@ export default {
           this.log = [result, temp.toDateString(), temp.toLocaleTimeString()];
           this.data = res.data;
         } catch (err) {
-          this.error = "Check your connection";
           this.errorSound.play();
           this.stopServer();
+          this.error = "Attempting to restart the server";
+          this.errorTimer = setTimeout(async () => {
+            await this.initialze();
+          }, 5000);
         }
       }, 3000);
     },
