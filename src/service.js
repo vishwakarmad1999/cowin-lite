@@ -23,7 +23,7 @@ export async function updateCurrent(message, last) {
 }
 
 export async function notifyBot(message) {
-  const bot_url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=-573056182&text=${message}`;
+  const bot_url = `https://api.telegram.org/bot${BOT_TOKEN}/sendMessage?chat_id=-1001436114329&text=${message}`;
 
   return axios
     .post(bot_url)
