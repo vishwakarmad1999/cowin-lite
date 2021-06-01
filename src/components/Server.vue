@@ -164,30 +164,31 @@ export default {
 
       if (message) {
         this.audio.play();
-
-        const users = await getUsers();
-        const user = users[0];
-
-        let flag = false;
-        if (
-          user.current === null ||
-          (user.current &&
-            new Date(now).getTime() - new Date(user.current).getTime() >
-              300 * 1000) ||
-          user.last !== message
-        ) {
-          await notifyBot(encodeURI(message));
-          flag = true;
-        }
-
-        if (flag) {
-          this.success = "Message sent";
-          await updateCurrent(now, message);
-        }
-
+        await this.sendMessage(now, message);
         return true;
       } else {
         return false;
+      }
+    },
+    async sendMessage(now, message) {
+      const users = await getUsers();
+      const user = users[0];
+
+      let flag = false;
+      if (
+        user.current === null ||
+        (user.current &&
+          new Date(now).getTime() - new Date(user.current).getTime() >
+            300 * 1000) ||
+        user.last !== message
+      ) {
+        await notifyBot(encodeURI(message));
+        flag = true;
+      }
+
+      if (flag) {
+        this.success = "Message sent";
+        await updateCurrent(now, message);
       }
     },
   },
